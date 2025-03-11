@@ -185,5 +185,44 @@ namespace Test_Taste_Console_Application.Domain.Services
                 --------------------+--------------------------------------------------
             */
         }
+
+        public void OutputAllPlanetsAndTheirAverageTemperatureToConsole() //This method will return the average temperature of all moons of planets
+        {
+            //The function works the same way as the PrintAllPlanetsAndTheirMoonsToConsole function. You can find more comments there.
+            var planets = _planetService.GetAllPlanets().ToArray();
+            if (!planets.Any())
+            {
+                Console.WriteLine(OutputString.NoMoonsFound);
+                return;
+            }
+
+            var columnSizes = new[] { 20, 30 };
+            var columnLabels = new[]
+            {
+                OutputString.PlanetId, OutputString.PlanetMoonAverageTemperature
+            };
+
+            ConsoleWriter.CreateHeader(columnLabels, columnSizes);
+
+            foreach (Planet planet in planets)
+            {
+                if (planet.HasMoons())
+                {
+                    planet.AverageMoonTemperature = planet.Moons.Select(x => x.AverageTemperature).Average(x => x);   //fetching the moon's temparture and storing the average of the temperatures.
+                    ConsoleWriter.CreateText(new string[] { $"{planet.Id}", $"{planet.AverageMoonTemperature}" }, columnSizes);
+                }
+            }
+
+            ConsoleWriter.CreateLine(columnSizes);
+            ConsoleWriter.CreateEmptyLines(2);
+
+            /*
+                --------------------+--------------------------------------------------
+                Planet's Number     |Planet's Average Moon Temperature
+                --------------------+--------------------------------------------------
+                1                   |0.0f
+                --------------------+--------------------------------------------------
+            */
+        }
     }
 }
